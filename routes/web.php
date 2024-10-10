@@ -33,4 +33,4 @@ Route::get('/produtos/{produto}/edit', [ProdutoController::class, 'edit'])->name
 Route::put('/produtos/{produto}', [ProdutoController::class, 'update'])->name('produto.update');
 Route::post('/produtos/{produto}', [ProdutoController::class, 'destroy'])->name('produto.destroy');
 
-Route::get('/relatorios/{relatorio}', [RelatorioController::class, 'show'])->name('relatorio.show');
+Route::get('/relatorios/{relatorio}/{formato}', [RelatorioController::class, 'show'])->name('relatorio.show');

@@ -63,7 +63,8 @@
         <a href="{{ route('produto.create') }}" class="btn btn-primary">Cadastrar produto</a>
     @endcan
 
-    <a href="{{ route('relatorio.show', ['relatorio' => 'produtos']) }}" class="btn btn-secondary">Exportar produtos</a>
+    <a href="{{ route('relatorio.show', ['relatorio' => 'produtos', 'formato' => 'pdf']) }}" class="btn btn-secondary">Exportar em PDF</a>
+    <a href="{{ route('relatorio.show', ['relatorio' => 'produtos', 'formato' => 'xlsx']) }}" class="btn btn-secondary">Exportar em Excel</a>
 
     @if (session()->has('mensagem'))
         <p><strong>{{ session()->get('mensagem') }}</strong></p>

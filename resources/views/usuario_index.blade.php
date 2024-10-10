@@ -36,8 +36,9 @@
         <a href="{{ route('usuario.create') }}" class="btn btn-primary">Criar usuário</a>
     @endcan
     
-    <a href="{{ route('relatorio.show', ['relatorio' => 'usuarios']) }}" class="btn btn-secondary">Exportar usuários</a>
-    
+    <a href="{{ route('relatorio.show', ['relatorio' => 'usuarios', 'formato' => 'pdf']) }}" class="btn btn-secondary">Exportar em PDF</a>
+    <a href="{{ route('relatorio.show', ['relatorio' => 'usuarios', 'formato' => 'xlsx']) }}" class="btn btn-secondary">Exportar em Excel</a>
+
     @if (session()->has('mensagem'))
         <p><strong>{{ session()->get('mensagem') }}</strong></p>
     @endif
