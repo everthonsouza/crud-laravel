@@ -10,7 +10,7 @@
         "laravel/framework": "^11.9",
         "laravel/tinker": "^2.9",
         "mpdf/mpdf": "8.1.3",
-        "pear/spreadsheet_excel_writer": "dev-master"
+        "phpoffice/phpspreadsheet": "^3.3"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",

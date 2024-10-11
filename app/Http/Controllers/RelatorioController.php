@@ -5,8 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\Produto;
 use App\Models\Usuario;
 use Dompdf\Dompdf;
-use Spreadsheet_Excel_Writer;
 use Illuminate\Http\Request;
+use PhpOffice\PhpSpreadsheet\Spreadsheet;
+use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 
 class RelatorioController extends Controller
 {
@@ -59,14 +60,9 @@ class RelatorioController extends Controller
 
         if ($tipo === 'usuarios' && $formato === 'xlsx') {
             
-            $xls = new Spreadsheet_Excel_Writer();
-            $xls->setVersion(8); //versão mais atual
+            $xls = new Spreadsheet();
+            $sheet = $xls->getActiveSheet();
             
-            $xls->send('usuarios_'.date("Y-m-d__H:i:s").'.xls');
-
-            $sheet = $xls->addWorksheet('Planilha1');
-            $sheet->setInputEncoding('UTF-8');
-
             $headers = [
                 'id',
                 'primeiro_nome',
@@ -75,40 +71,34 @@ class RelatorioController extends Controller
                 'status'
             ];
 
-            $row = $col = 0;
+            $col = 1;
             foreach ($headers as $header) {
-                $sheet->write($row, $col, $header);
+                $sheet->setCellValue([$col, 1], $header);
                 $col++;
             }
 
             $usuarios = Usuario::all();
 
-            $row = 0;
+            $row = 2; 
             foreach ($usuarios as $usuario) {
-                $data = [
-                    'id' => $usuario->id,
-                    'primeiro_nome' => $usuario->primeiro_nome,
-                    'sobrenome' => $usuario->sobrenome,
-                    'perfil' => $usuario->perfil,
-                    'status' => $usuario->ativo === 1 ? 'Sim' : 'Não'
-                ];
-
-                $sheet->writeRow($row, 0, $data);
+                $sheet->setCellValue([1, $row], $usuario->id);
+                $sheet->setCellValue([2, $row], $usuario->primeiro_nome);
+                $sheet->setCellValue([3, $row], $usuario->sobrenome);
+                $sheet->setCellValue([4, $row], $usuario->perfil);
+                $sheet->setCellValue([5, $row], $usuario->ativo === 1 ? 'Sim' : 'Não');
                 $row++;
             }
 
-            $xls->close();
+            $writer = new Xlsx($xls);
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="'. urlencode('usuarios_'.date("Y-m-d__H:i:s").'.xlsx').'"');
+            $writer->save('php://output');
         }
 
         if ($tipo === 'produtos' && $formato === 'xlsx') {
             
-            $xls = new Spreadsheet_Excel_Writer();
-            $xls->setVersion(8); //versão mais atual
-            
-            $xls->send('produtos_'.date("Y-m-d__H:i:s").'.xls');
-
-            $sheet = $xls->addWorksheet('Planilha1');
-            $sheet->setInputEncoding('UTF-8');
+            $xls = new Spreadsheet();
+            $sheet = $xls->getActiveSheet();
 
             $headers = [
                 'id',
@@ -119,30 +109,29 @@ class RelatorioController extends Controller
                 'ativo'
             ];
 
-            $row = $col = 0;
+            $col = 1;
             foreach ($headers as $header) {
-                $sheet->write($row, $col, $header);
+                $sheet->setCellValue([$col, 1], $header);
                 $col++;
             }
 
             $produtos = Produto::all();
 
-            $row = 0;
+            $row = 2; 
             foreach ($produtos as $produto) {
-                $data = [
-                    'id' => $produto->id,
-                    'codigo' => $produto->codigo,
-                    'produto' => $produto->produto,
-                    'descrição' => $produto->descricao,
-                    'em estoque' => $produto->em_estoque === 1 ? 'Sim' : 'Não',
-                    'ativo' => $produto->ativo === 1 ? 'Sim' : 'Não',
-                ];
-
-                $sheet->writeRow($row, 0, $data);
+                $sheet->setCellValue([1, $row], $produto->id);
+                $sheet->setCellValue([2, $row], $produto->codigo);
+                $sheet->setCellValue([3, $row], $produto->produto);
+                $sheet->setCellValue([4, $row], $produto->descricao);
+                $sheet->setCellValue([5, $row], $produto->em_estoque === 1 ? 'Sim' : 'Não');
+                $sheet->setCellValue([6, $row], $produto->ativo === 1 ? 'Sim' : 'Não');
                 $row++;
             }
 
-            $xls->close();
+            $writer = new Xlsx($xls);
+            header('Content-Type: application/vnd.openxmlformats-officedocument.spreadsheetml.sheet');
+            header('Content-Disposition: attachment; filename="'. urlencode('produtos_'.date("Y-m-d__H:i:s").'.xlsx').'"');
+            $writer->save('php://output');
         }
     }
 
